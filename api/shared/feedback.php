@@ -22,27 +22,6 @@ if (file_exists($config_file)) {
 }
 
 $method = $_SERVER['REQUEST_METHOD'];
-$action = $_GET['action'] ?? '';
-
-if ($method === 'GET' && $action === 'status') {
-    $email = $_GET['email'] ?? '';
-    if (empty($email)) {
-        echo json_encode(['status' => 'error', 'message' => 'Email is required']);
-        exit;
-    }
-    
-    $stmt = $conn->prepare("SELECT feedback_id, status, created_at, updated_at FROM feedback WHERE email = ? ORDER BY created_at DESC LIMIT 10");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $feedback = [];
-    while ($row = $result->fetch_assoc()) {
-        $feedback[] = $row;
-    }
-    $stmt->close();
-    echo json_encode(['status' => 'success', 'data' => $feedback]);
-    exit;
-}
 
 if ($method === 'POST') {
     $name     = isset($_POST['name']) ? $_POST['name'] : 'Anonymous';
@@ -72,38 +51,58 @@ if ($method === 'POST') {
     } else {
         echo json_encode(['status' => 'error', 'message' => $conn->error]);
     }
-} 
-elseif ($method === 'PUT') {
+} elseif ($method === 'PUT') {
     $putData = json_decode(file_get_contents("php://input"), true);
 
+    $feedback_id = isset($putData['feedback_id']) ? $putData['feedback_id'] : null;
+    $new_status  = isset($putData['status']) ? $putData['status'] : null;
+
+    // Validate required identifiers
+    if (!$feedback_id || !$new_status) {
+        echo json_encode(['status' => 'error', 'message' => 'feedback_id and status are required for update.']);
+        exit;
+    }
+
+    // Build dynamic SQL
     $fields = [];
     $params = [];
 
-    if (isset($putData['status'])) {
+    if ($new_status) {
         $fields[] = "status = ?";
-        $params[] = $putData['status'];
+        $params[] = $new_status;
     }
 
-    if (empty($fields) || !isset($putData['feedback_id'])) {
-        echo json_encode(['success' => false, 'message' => 'Missing feedback_id or fields']);
-        return;
+    if (empty($fields)) {
+        echo json_encode(['status' => 'error', 'message' => 'No fields to update']);
+        exit;
     }
 
     $sql = "UPDATE feedback SET " . implode(", ", $fields) . " WHERE feedback_id = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt) {
-        $params[] = $putData['feedback_id'];
+        $params[] = $feedback_id;
         $stmt->bind_param(str_repeat("s", count($params) - 1) . "i", ...$params);
-        $stmt->execute();
 
-        echo json_encode(['success' => true, 'message' => 'Feedback updated successfully']);
+        if ($stmt->execute()) {
+            echo json_encode(['status' => 'success', 'message' => 'Feedback updated successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => $stmt->error]);
+        }
         $stmt->close();
     } else {
-        echo json_encode(['success' => false, 'message' => $conn->error]);
+        echo json_encode(['status' => 'error', 'message' => $conn->error]);
+    }
+} else {
+    $result = $conn->query("SELECT * FROM feedback ORDER BY created_at DESC");
+
+    if ($result) {
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+        echo json_encode($data, JSON_PRETTY_PRINT);
+    } else {
+        echo json_encode([]);
     }
 }
-
 
 ob_end_flush();
 exit;

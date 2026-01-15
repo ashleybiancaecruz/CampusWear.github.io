@@ -185,7 +185,7 @@ $iscApplications = $conn->query("SELECT COUNT(*) as count FROM isc_applications 
                                 <?php else: ?>
                                     <?php foreach ($recentOrders as $order): ?>
                                         <tr>
-                                            <td><strong>#<?php echo $order['id']; ?></strong></td>
+                                            <td><strong>#<?php echo $order['purchases_id']; ?></strong></td>
                                             <td><?php echo htmlspecialchars($order['username']); ?></td>
                                             <td>
                                                 <div class="admin-badge badge-info mb-1" style="font-size: 0.7rem;"><?php echo htmlspecialchars($order['org_name']); ?></div><br>
