@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusWear | Home</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        body { background-color: #f4f1ea; } /* Matching the cream background in your screenshot */
+        #aiButton { position: fixed; bottom: 30px; right: 30px; z-index: 9999; width: 65px; height: 65px; border-radius: 50%; background: #8B0000; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.4); }
+        #aiWindow { position: fixed; bottom: 110px; right: 30px; width: 360px; height: 520px; background: white; z-index: 9999; display: none; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.25); overflow: hidden; }
+        #aiWindow.active { display: flex; flex-direction: column; }
+        .merch-card { transition: all 0.3s ease; border: none; background: #fff; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .merch-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
+        .pill-btn { cursor: pointer; border: 1px solid #ddd; padding: 6px 18px; border-radius: 25px; transition: 0.3s; font-weight: 500; background: white; }
+        .pill-btn.active { background-color: #8B0000; color: white; border-color: #8B0000; }
+        .price-tag { color: #8B0000; font-weight: bold; }
+        .login-btn { background-color: #8B0000; color: white; border-radius: 50px; padding: 8px 25px; font-weight: bold; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3 mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+            <img src="assets/images/logo.png" width="40" height="40" class="me-2" onerror="this.src='https://via.placeholder.com/40'">
+            <span style="color: #8B0000;">CampusWear</span>
+        </a>
+        <div class="ms-auto d-flex align-items-center gap-4">
+            <a href="#" class="text-dark text-decoration-none small fw-bold">HOME</a>
+            <a href="#" class="text-dark text-decoration-none small fw-bold">FEEDBACK</a>
+            <a href="#" class="text-dark text-decoration-none small fw-bold">ABOUT US</a>
+            <a href="auth.php" class="login-btn">LOGIN</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container py-4">
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="alert border-0 shadow-sm rounded-4 p-4 text-white" style="background: #8B0000;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="fw-bold mb-1"><i class="fas fa-id-card me-2"></i>Join ISC and Get 10% Off!</h5>
+                        <p class="mb-0 opacity-75 small">Apply for ISC membership to enjoy exclusive discounts on ISC merchandise.</p>
+                    </div>
+                    <button class="btn btn-light rounded-pill px-4 fw-bold"><i class="fas fa-file-signature me-2"></i>Apply Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <div class="input-group shadow-sm rounded-pill overflow-hidden border mb-4 bg-white">
+                <span class="input-group-text bg-white border-0 ps-4"><i class="fas fa-search text-muted"></i></span>
+                <input type="text" class="form-control border-0 py-3 shadow-none" placeholder="Search merchandise...">
+                <button class="btn btn-white border-0 pe-4 text-muted border-start">All Organizations <i class="fas fa-chevron-down ms-2"></i></button>
+            </div>
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <div class="pill-btn active">All Items</div>
+                <div class="pill-btn">Academic</div>
+                <div class="pill-btn">Non-Academic</div>
+                <div class="pill-btn">ISC</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5">
+        
+        <div class="col">
+            <div class="merch-card p-3 h-100 d-flex flex-column">
+                <div class="text-center mb-3 bg-light rounded-4 overflow-hidden" style="height: 180px;">
+                    <img src="assets/images/merchandise/afba_polo.png" class="img-fluid h-100 object-fit-contain" onerror="this.src='https://via.placeholder.com/150'">
+                </div>
+                <span class="text-muted extra-small fw-bold">AFBA</span>
+                <h6 class="fw-bold mb-1 small">AFBA Classic Polo Shirt</h6>
+                <p class="text-muted smaller mb-2" style="font-size: 0.75rem;">Premium cotton polo shirt with AFBA logo embroidery.</p>
+                <div class="price-tag mb-3 mt-auto">₱450.00</div>
+                <a href="auth.php" class="btn btn-maroon w-100 rounded-pill btn-sm text-white" style="background: #8B0000;"><i class="fas fa-sign-in-alt me-1"></i> Login to Purchase</a>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="merch-card p-3 h-100 d-flex flex-column">
+                <div class="text-center mb-3 bg-light rounded-4 overflow-hidden" style="height: 180px;">
+                    <img src="assets/images/merchandise/afba_tote.png" class="img-fluid h-100 object-fit-contain" onerror="this.src='https://via.placeholder.com/150'">
+                </div>
+                <span class="text-muted extra-small fw-bold">AFBA</span>
+                <h6 class="fw-bold mb-1 small">AFBA Executive Tote Bag</h6>
+                <p class="text-muted smaller mb-2" style="font-size: 0.75rem;">Professional tote bag with multiple compartments.</p>
+                <div class="price-tag mb-3 mt-auto">₱350.00</div>
+                <a href="auth.php" class="btn btn-maroon w-100 rounded-pill btn-sm text-white" style="background: #8B0000;"><i class="fas fa-sign-in-alt me-1"></i> Login to Purchase</a>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="merch-card p-3 h-100 d-flex flex-column">
+                <div class="text-center mb-3 bg-light rounded-4 overflow-hidden" style="height: 180px;">
+                    <img src="assets/images/merchandise/journal.png" class="img-fluid h-100 object-fit-contain" onerror="this.src='https://via.placeholder.com/150'">
+                </div>
+                <span class="text-muted extra-small fw-bold">Arise and Shine</span>
+                <h6 class="fw-bold mb-1 small">Arise and Shine Devotional Journal</h6>
+                <p class="text-muted smaller mb-2" style="font-size: 0.75rem;">Beautiful journal for daily reflections and spirit...</p>
+                <div class="price-tag mb-3 mt-auto">₱250.00</div>
+                <a href="auth.php" class="btn btn-maroon w-100 rounded-pill btn-sm text-white" style="background: #8B0000;"><i class="fas fa-sign-in-alt me-1"></i> Login to Purchase</a>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="merch-card p-3 h-100 d-flex flex-column">
+                <div class="text-center mb-3 bg-light rounded-4 overflow-hidden" style="height: 180px;">
+                    <img src="assets/images/merchandise/faith_shirt.png" class="img-fluid h-100 object-fit-contain" onerror="this.src='https://via.placeholder.com/150'">
+                </div>
+                <span class="text-muted extra-small fw-bold">Arise and Shine</span>
+                <h6 class="fw-bold mb-1 small">Arise and Shine Faith T-Shirt</h6>
+                <p class="text-muted smaller mb-2" style="font-size: 0.75rem;">Inspirational T-shirt with faith-based messages.</p>
+                <div class="price-tag mb-3 mt-auto">₱350.00</div>
+                <a href="auth.php" class="btn btn-maroon w-100 rounded-pill btn-sm text-white" style="background: #8B0000;"><i class="fas fa-sign-in-alt me-1"></i> Login to Purchase</a>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="merch-card p-3 h-100 d-flex flex-column">
+                <div class="text-center mb-3 bg-light rounded-4 overflow-hidden" style="height: 180px;">
+                    <img src="assets/images/merchandise/bhb_cap.png" class="img-fluid h-100 object-fit-contain" onerror="this.src='https://via.placeholder.com/150'">
+                </div>
+                <span class="text-muted extra-small fw-bold">BHB</span>
+                <h6 class="fw-bold mb-1 small">BHB Brotherhood Cap</h6>
+                <p class="text-muted smaller mb-2" style="font-size: 0.75rem;">Classic cap with BHB embroidery. Represents honor...</p>
+                <div class="price-tag mb-3 mt-auto">₱300.00</div>
+                <a href="auth.php" class="btn btn-maroon w-100 rounded-pill btn-sm text-white" style="background: #8B0000;"><i class="fas fa-sign-in-alt me-1"></i> Login to Purchase</a>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<div id="aiButton" onclick="toggleAI()"><i class="fas fa-robot fa-2x"></i></div>
+<div id="aiWindow">
+    <div class="p-3 text-white d-flex justify-content-between align-items-center" style="background: #8B0000;">
+        <span class="fw-bold"><i class="fas fa-comment-dots me-2"></i>CampusSupport AI</span>
+        <button onclick="toggleAI()" class="btn-close btn-close-white shadow-none"></button>
+    </div>
+    <div id="chatContent" class="p-3 flex-grow-1 overflow-auto bg-light"></div>
+</div>
+
+<script>
+    function toggleAI() {
+        document.getElementById('aiWindow').classList.toggle('active');
+    }
+</script>
+
+</body>
+</html>
