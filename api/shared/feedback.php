@@ -1,7 +1,4 @@
 <?php
-
-ob_start();
-
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS');
@@ -13,96 +10,101 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 $config_file = __DIR__ . '/../../config/config.php';
-
-if (file_exists($config_file)) {
-    require_once $config_file;
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Config file not found.']);
+if (!file_exists($config_file)) {
+    echo json_encode(['success' => false, 'message' => 'Config file not found.']);
     exit;
 }
+require_once $config_file;
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-if ($method === 'POST') {
-    $name     = isset($_POST['name']) ? $_POST['name'] : 'Anonymous';
-    $email    = isset($_POST['email']) ? $_POST['email'] : '';
-    $mobile   = isset($_POST['mobile_number']) ? $_POST['mobile_number'] : '';
-    $content  = isset($_POST['body']) ? $_POST['body'] : '';
-    $web_name = isset($_POST['website_name']) ? $_POST['website_name'] : 'Campus Wear';
-    $category = isset($_POST['category_name']) ? $_POST['category_name'] : 'feedback';
+if ($method === 'GET') {
+    $sql = "SELECT feedback_id, name, email, mobile_number, body, website_name, category_name, status 
+            FROM feedback ORDER BY feedback_id DESC";
+    $result = $conn->query($sql);
+
+    if ($result) {
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        echo json_encode(['success' => true, 'data' => $rows]);
+    } else {
+        echo json_encode(['success' => false, 'message' => $conn->error]);
+    }
+}
+
+elseif ($method === 'POST') {
+    $name     = $_POST['name'] ?? 'Anonymous';
+    $email    = $_POST['email'] ?? '';
+    $mobile   = $_POST['mobile_number'] ?? '';
+    $content  = $_POST['body'] ?? '';
+    $web_name = $_POST['website_name'] ?? 'Campus Wear';
+    $category = $_POST['category_name'] ?? 'feedback';
 
     if (empty($email) || empty($content)) {
-        echo json_encode(['status' => 'error', 'message' => 'Email and Body are required.']);
+        echo json_encode(['success' => false, 'message' => 'Email and Body are required.']);
+        exit;
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid email format.']);
         exit;
     }
 
     $sql = "INSERT INTO feedback (name, email, mobile_number, body, website_name, category_name) 
             VALUES (?, ?, ?, ?, ?, ?)";
-
     $stmt = $conn->prepare($sql);
+
     if ($stmt) {
         $stmt->bind_param("ssssss", $name, $email, $mobile, $content, $web_name, $category);
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Feedback submitted!']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => $stmt->error]);
-        }
+        $response = $stmt->execute()
+            ? ['success' => true, 'message' => 'Feedback submitted!']
+            : ['success' => false, 'message' => $stmt->error];
+        echo json_encode($response);
         $stmt->close();
     } else {
-        echo json_encode(['status' => 'error', 'message' => $conn->error]);
+        echo json_encode(['success' => false, 'message' => $conn->error]);
     }
-} elseif ($method === 'PUT') {
+}
+
+elseif ($method === 'PUT') {
     $putData = json_decode(file_get_contents("php://input"), true);
-
-    $feedback_id = isset($putData['feedback_id']) ? $putData['feedback_id'] : null;
-    $new_status  = isset($putData['status']) ? $putData['status'] : null;
-
-    // Validate required identifiers
-    if (!$feedback_id || !$new_status) {
-        echo json_encode(['status' => 'error', 'message' => 'feedback_id and status are required for update.']);
+    if (!isset($putData['feedback_id'])) {
+        echo json_encode(['success' => false, 'message' => 'Missing feedback_id']);
         exit;
     }
 
-    // Build dynamic SQL
     $fields = [];
     $params = [];
+    $types  = '';
 
-    if ($new_status) {
+    if (isset($putData['status'])) {
         $fields[] = "status = ?";
-        $params[] = $new_status;
+        $params[] = $putData['status'];
+        $types   .= 's';
     }
 
     if (empty($fields)) {
-        echo json_encode(['status' => 'error', 'message' => 'No fields to update']);
+        echo json_encode(['success' => false, 'message' => 'No fields to update']);
         exit;
     }
+
+    $params[] = $putData['feedback_id'];
+    $types   .= 'i';
 
     $sql = "UPDATE feedback SET " . implode(", ", $fields) . " WHERE feedback_id = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt) {
-        $params[] = $feedback_id;
-        $stmt->bind_param(str_repeat("s", count($params) - 1) . "i", ...$params);
-
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Feedback updated successfully']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => $stmt->error]);
-        }
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        echo json_encode(['success' => true, 'message' => 'Feedback updated successfully']);
         $stmt->close();
     } else {
-        echo json_encode(['status' => 'error', 'message' => $conn->error]);
-    }
-} else {
-    $result = $conn->query("SELECT * FROM feedback ORDER BY created_at DESC");
-
-    if ($result) {
-        $data = $result->fetch_all(MYSQLI_ASSOC);
-        echo json_encode($data, JSON_PRETTY_PRINT);
-    } else {
-        echo json_encode([]);
+        echo json_encode(['success' => false, 'message' => $conn->error]);
     }
 }
 
-ob_end_flush();
-exit;
+else {
+    echo json_encode(['success' => false, 'message' => 'Unsupported request method']);
+}

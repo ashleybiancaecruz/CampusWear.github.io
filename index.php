@@ -37,36 +37,120 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
 
 <style>
     #aiButton {
-        position: fixed; bottom: 30px; right: 30px; z-index: 9999;
-        width: 65px; height: 65px; border-radius: 50%;
-        background: #8B0000; color: white; display: flex !important;
-        align-items: center; justify-content: center;
-        cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background: #8B0000;
+        color: white;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
         transition: transform 0.3s ease;
     }
-    #aiButton:hover { transform: scale(1.1) rotate(5deg); }
-    #aiWindow {
-        position: fixed; bottom: 110px; right: 30px;
-        width: 360px; height: 520px; background: white;
-        z-index: 9999; display: none; flex-direction: column;
-        border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-        overflow: hidden; border: 1px solid rgba(0,0,0,0.1);
-    }
-    #aiWindow.active { display: flex !important; }
-    #chatContent { flex-grow: 1; overflow-y: auto; padding: 15px; background: #fdfdfd; display: flex; flex-direction: column; gap: 12px; }
-    .user-msg { background: #8B0000; color: white; padding: 10px 14px; border-radius: 18px 18px 0 18px; align-self: flex-end; max-width: 85%; font-size: 0.9rem; }
-    .ai-msg { background: #f0f0f0; color: #333; padding: 10px 14px; border-radius: 18px 18px 18px 0; align-self: flex-start; max-width: 85%; font-size: 0.9rem; border: 1px solid #e0e0e0; }
 
-    .merch-card { transition: all 0.3s ease; border: 1px solid #eee; background: #fff; }
-    .merch-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
-    .pill-btn { cursor: pointer; border: 1px solid #ddd; padding: 6px 18px; border-radius: 25px; transition: 0.3s; font-weight: 500; }
-    .pill-btn.active { background-color: #8B0000; color: white; border-color: #8B0000; }
-    
-    .cart-badge-pop { animation: cartPop 0.4s ease; }
+    #aiButton:hover {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    #aiWindow {
+        position: fixed;
+        bottom: 110px;
+        right: 30px;
+        width: 360px;
+        height: 520px;
+        background: white;
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    #aiWindow.active {
+        display: flex !important;
+    }
+
+    #chatContent {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background: #fdfdfd;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .user-msg {
+        background: #8B0000;
+        color: white;
+        padding: 10px 14px;
+        border-radius: 18px 18px 0 18px;
+        align-self: flex-end;
+        max-width: 85%;
+        font-size: 0.9rem;
+    }
+
+    .ai-msg {
+        background: #f0f0f0;
+        color: #333;
+        padding: 10px 14px;
+        border-radius: 18px 18px 18px 0;
+        align-self: flex-start;
+        max-width: 85%;
+        font-size: 0.9rem;
+        border: 1px solid #e0e0e0;
+    }
+
+    .merch-card {
+        transition: all 0.3s ease;
+        border: 1px solid #eee;
+        background: #fff;
+    }
+
+    .merch-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .pill-btn {
+        cursor: pointer;
+        border: 1px solid #ddd;
+        padding: 6px 18px;
+        border-radius: 25px;
+        transition: 0.3s;
+        font-weight: 500;
+    }
+
+    .pill-btn.active {
+        background-color: #8B0000;
+        color: white;
+        border-color: #8B0000;
+    }
+
+    .cart-badge-pop {
+        animation: cartPop 0.4s ease;
+    }
+
     @keyframes cartPop {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.6); }
-        100% { transform: scale(1); }
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.6);
+        }
+
+        100% {
+            transform: scale(1);
+        }
     }
 </style>
 
@@ -74,13 +158,15 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
     <?php if ($showISCBanner): ?>
         <div class="row justify-content-center mb-4">
             <div class="col-lg-10">
-                <div class="alert border-0 shadow-sm rounded-4 p-4" style="background: linear-gradient(135deg, #8B0000 0%, #d42a2a 100%); color: white;">
+                <div class="alert border-0 shadow-sm rounded-4 p-4"
+                    style="background: linear-gradient(135deg, #8B0000 0%, #d42a2a 100%); color: white;">
                     <div class="d-flex align-items-center justify-content-between flex-wrap">
                         <div class="mb-3 mb-md-0">
                             <h5 class="mb-2 fw-bold"><i class="fas fa-id-card me-2"></i>Join ISC and Get 10% Off!</h5>
                             <p class="mb-0 opacity-90">Verify your membership to unlock student discounts on all gear.</p>
                         </div>
-                        <a href="isc_application.php" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm">Apply Now</a>
+                        <a href="isc_application.php" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm">Apply
+                            Now</a>
                     </div>
                 </div>
             </div>
@@ -91,7 +177,8 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
         <div class="col-lg-10 text-center">
             <div class="input-group shadow-sm rounded-pill overflow-hidden border mb-4">
                 <span class="input-group-text bg-white border-0 ps-4"><i class="fas fa-search text-muted"></i></span>
-                <input type="text" id="merchSearch" class="form-control border-0 py-3 shadow-none" onkeyup="filterMerchandise()" placeholder="Search products, departments, or gear...">
+                <input type="text" id="merchSearch" class="form-control border-0 py-3 shadow-none"
+                    onkeyup="filterMerchandise()" placeholder="Search products, departments, or gear...">
             </div>
             <div class="d-flex justify-content-center gap-2 flex-wrap">
                 <div onclick="applyCategory('all', this)" class="pill-btn active">All Items</div>
@@ -104,21 +191,26 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
 
     <div id="merchGrid" class="row g-4 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
         <?php foreach ($merchandise as $merch): ?>
-            <div class="col merch-item" data-type="<?= htmlspecialchars($merch['org_type']) ?>" data-name="<?= strtolower(htmlspecialchars($merch['name'])) ?>">
+            <div class="col merch-item" data-type="<?= htmlspecialchars($merch['org_type']) ?>"
+                data-name="<?= strtolower(htmlspecialchars($merch['name'])) ?>">
                 <div class="merch-card p-3 rounded-4 h-100 d-flex flex-column">
                     <div class="text-center mb-3 bg-light rounded-3 overflow-hidden" style="height: 180px;">
-                        <img src="assets/images/merchandise/<?= htmlspecialchars($merch['image']) ?>" class="img-fluid h-100 object-fit-contain" onerror="this.src='assets/images/logo.png';">
+                        <img src="assets/images/merchandise/<?= htmlspecialchars($merch['image']) ?>"
+                            class="img-fluid h-100 object-fit-contain" onerror="this.src='assets/images/logo.png';">
                     </div>
-                    <span class="text-muted extra-small text-uppercase fw-bold"><?= htmlspecialchars($merch['org_name']) ?></span>
+                    <span
+                        class="text-muted extra-small text-uppercase fw-bold"><?= htmlspecialchars($merch['org_name']) ?></span>
                     <h6 class="fw-bold mb-1"><?= htmlspecialchars($merch['name']) ?></h6>
                     <div class="fw-bold mb-3 text-danger mt-auto">₱<?= number_format($merch['price'], 2) ?></div>
-                    
+
                     <div class="d-flex flex-column gap-2">
                         <?php if ($isLoggedIn): ?>
-                            <button class="btn btn-outline-dark btn-sm rounded-pill" onclick="addToCart(<?= $merch['merchandise_id'] ?>)">
+                            <button class="btn btn-outline-dark btn-sm rounded-pill"
+                                onclick="addToCart(<?= $merch['merchandise_id'] ?>)">
                                 <i class="fas fa-cart-plus me-1"></i> Add to Cart
                             </button>
-                            <button class="btn btn-danger btn-sm rounded-pill" onclick="openPurchaseModal(<?= $merch['merchandise_id'] ?>, '<?= addslashes($merch['name']) ?>', <?= $merch['price'] ?>, <?= $merch['stock'] ?>)">
+                            <button class="btn btn-danger btn-sm rounded-pill"
+                                onclick="openPurchaseModal(<?= $merch['merchandise_id'] ?>, '<?= htmlspecialchars(addslashes($merch['name']), ENT_QUOTES) ?>', <?= $merch['price'] ?>, <?= $merch['stock'] ?>)">
                                 Buy Now
                             </button>
                         <?php else: ?>
@@ -140,8 +232,10 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
     <div id="chatContent"></div>
     <div class="p-3 bg-white border-top">
         <div class="input-group">
-            <input type="text" id="aiInput" class="form-control rounded-pill-start shadow-none" placeholder="Ask about products or discounts..." onkeypress="if(event.key === 'Enter') askAIEnglish()">
-            <button class="btn btn-dark rounded-pill-end px-3" onclick="askAIEnglish()"><i class="fas fa-paper-plane"></i></button>
+            <input type="text" id="aiInput" class="form-control rounded-pill-start shadow-none"
+                placeholder="Ask about products or discounts..." onkeypress="if(event.key === 'Enter') askAIEnglish()">
+            <button class="btn btn-dark rounded-pill-end px-3" onclick="askAIEnglish()"><i
+                    class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 </div>
@@ -163,7 +257,8 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
                 <span class="fw-bold text-secondary">Total:</span>
                 <strong class="h4 mb-0 text-danger" id="purchaseTotal">₱0.00</strong>
             </div>
-            <button onclick="confirmDirectPurchase()" class="btn btn-danger btn-lg rounded-pill w-100">Check Out Now</button>
+            <button onclick="confirmDirectPurchase()" class="btn btn-danger btn-lg rounded-pill w-100">Check Out
+                Now</button>
         </div>
     </div>
 </div>
@@ -225,28 +320,28 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
         f.append('quantity', 1);
 
         fetch('api/cart.php', { method: 'POST', body: f })
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === 'success') {
-                updateBadge(); 
-                alert('Item added to cart!');
-            }
-        });
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    updateBadge();
+                    alert('Item added to cart!');
+                }
+            });
     }
 
     function updateBadge() {
         fetch('api/get_cart_count.php')
-        .then(res => res.json())
-        .then(data => {
-            const badge = document.querySelector('.cart-count, .badge-danger, .badge-pill');
-            if (badge) {
-                badge.innerText = data.count;
-                badge.classList.remove('cart-badge-pop');
-                void badge.offsetWidth; 
-                badge.classList.add('cart-badge-pop');
-                badge.style.display = data.count > 0 ? 'inline-block' : 'none';
-            }
-        });
+            .then(res => res.json())
+            .then(data => {
+                const badge = document.querySelector('.cart-count, .badge-danger, .badge-pill');
+                if (badge) {
+                    badge.innerText = data.count;
+                    badge.classList.remove('cart-badge-pop');
+                    void badge.offsetWidth;
+                    badge.classList.add('cart-badge-pop');
+                    badge.style.display = data.count > 0 ? 'inline-block' : 'none';
+                }
+            });
     }
 
     function openPurchaseModal(id, name, price, stock) {
